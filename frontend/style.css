@@ -1116,7 +1116,11 @@ h1, h2, h3, .brand-name, .boot-word {
   .topbar { flex-wrap: wrap; gap: 12px; padding: 14px 18px; }
   .setup-perf-filters select, .setup-perf-filters input { flex: 1 1 45%; }
   #setup-perf-results { overflow-x: auto; }
-  .main-nav { display: none; }
+  /* Bottom tab bar is quick access to the 4 most-used sections, not a
+     replacement for the full nav - hiding .main-nav here made Markets,
+     Practice, Learn, and Journal unreachable on mobile entirely. Keep it
+     visible; it already scrolls horizontally (.main-nav has overflow-x:
+     auto) and .topbar already wraps on this breakpoint. */
   .strategylab-layout { flex-direction: column; }
   .strategylab-list { width: 100%; position: static; max-height: none; }
   .bottom-tab-bar { display: flex; }
