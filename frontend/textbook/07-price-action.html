@@ -1,0 +1,50 @@
+<h2>Price Action</h2>
+<p class="tb-subtitle">Reading raw candles and structure without relying on indicators.</p>
+
+<p>"Price action" trading means making decisions primarily from the candles themselves — their shape, size, and position relative to support/resistance — rather than from derived indicators like RSI or MACD. Indicators lag price by definition (they're calculated <em>from</em> price); price action tries to read the rawest, most immediate signal available.</p>
+
+<h3>Pin bar (rejection candle)</h3>
+<div class="tb-diagram">
+  <svg viewBox="0 0 300 170" xmlns="http://www.w3.org/2000/svg">
+    <line x1="90" y1="20" x2="90" y2="150" stroke="#22e58a" stroke-width="2"/>
+    <rect x="72" y="120" width="36" height="24" fill="#22e58a" rx="2"/>
+    <text x="90" y="14" fill="#8992ad" font-size="11" text-anchor="middle">Long wick = rejection</text>
+    <text x="90" y="163" fill="#eef1fb" font-size="12" text-anchor="middle" font-weight="600">Bullish pin bar</text>
+
+    <line x1="210" y1="30" x2="210" y2="160" stroke="#ff5c7c" stroke-width="2"/>
+    <rect x="192" y="30" width="36" height="24" fill="#ff5c7c" rx="2"/>
+    <text x="210" y="170" fill="#eef1fb" font-size="12" text-anchor="middle" font-weight="600">Bearish pin bar</text>
+  </svg>
+  <div class="tb-diagram-caption">A small body with a long wick on one side — price pushed hard in one direction and got firmly rejected back. A bullish pin bar (long lower wick) at support, or bearish pin bar (long upper wick) at resistance, is one of the most widely used single-candle signals.</div>
+</div>
+
+<h3>Engulfing candle</h3>
+<div class="tb-diagram">
+  <svg viewBox="0 0 300 170" xmlns="http://www.w3.org/2000/svg">
+    <rect x="90" y="80" width="24" height="40" fill="#ff5c7c" rx="2"/>
+    <rect x="120" y="55" width="30" height="90" fill="#22e58a" rx="2"/>
+    <text x="120" y="163" fill="#eef1fb" font-size="12" text-anchor="middle" font-weight="600">Bullish engulfing</text>
+  </svg>
+  <div class="tb-diagram-caption">A candle whose body completely "engulfs" the prior candle's body, in the opposite direction — a small bearish candle followed by a large bullish candle that fully covers it signals a potential shift in control from sellers to buyers (and vice versa for bearish engulfing).</div>
+</div>
+
+<h3>Inside bar</h3>
+<p>A candle whose entire high-low range sits inside the previous candle's range — a pause/compression that often precedes a breakout in either direction. On its own it's neutral; context (where it forms relative to support/resistance and the prevailing trend) determines which way the eventual break is more likely to go.</p>
+
+<h3>Market structure: higher highs, higher lows</h3>
+<div class="tb-diagram">
+  <svg viewBox="0 0 400 170" xmlns="http://www.w3.org/2000/svg">
+    <polyline points="20,150 80,90 120,110 180,50 220,75 280,20 320,45 380,10" fill="none" stroke="#22e58a" stroke-width="2.5"/>
+    <text x="80" y="80" fill="#eef1fb" font-size="10" text-anchor="middle">HH</text>
+    <text x="120" y="125" fill="#8992ad" font-size="10" text-anchor="middle">HL</text>
+    <text x="180" y="40" fill="#eef1fb" font-size="10" text-anchor="middle">HH</text>
+    <text x="220" y="90" fill="#8992ad" font-size="10" text-anchor="middle">HL</text>
+    <text x="280" y="10" fill="#eef1fb" font-size="10" text-anchor="middle">HH</text>
+  </svg>
+  <div class="tb-diagram-caption">A healthy uptrend prints a staircase of Higher Highs (HH) and Higher Lows (HL). A downtrend is the mirror image: Lower Highs (LH) and Lower Lows (LL). The first Lower Low in an uptrend (or Higher High in a downtrend) is often the earliest hint the trend may be turning — this is the foundation the "smart money" chapter builds directly on.</div>
+</div>
+
+<div class="tb-callout">
+  <span class="tb-callout-icon">💡</span>
+  <div>Price action isn't "no indicators ever" — most experienced traders use a couple of tools (an MA for trend, RSI for momentum) alongside pure candle/structure reading. It's a lens, not a religion: the goal is understanding <em>why</em> a signal might work, not collecting rules to follow blindly.</div>
+</div>

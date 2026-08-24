@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>QuantSphere</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#9889;</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <div id="bg-fx" aria-hidden="true">
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+    <div class="orb orb-c"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <div id="boot-screen">
+    <div class="boot-logo">
+      <span class="boot-bolt">⚡</span>
+      <span class="boot-word">QuantSphere</span>
+    </div>
+    <div class="boot-bar"><div class="boot-bar-fill"></div></div>
+    <div class="boot-status" id="boot-status">waking up the engine…</div>
+  </div>
+
+  <div id="app" class="hidden">
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-bolt">⚡</span>
+        <span class="brand-name">QuantSphere</span>
+      </div>
+      <nav class="main-nav" id="main-nav">
+        <button type="button" class="nav-item active" data-view="home">Home</button>
+        <button type="button" class="nav-item" data-view="markets">Markets</button>
+        <button type="button" class="nav-item" data-view="trades">Trades</button>
+        <button type="button" class="nav-item" data-view="analyze">Analyze</button>
+        <button type="button" class="nav-item" data-view="backtest">Practice</button>
+        <button type="button" class="nav-item" data-view="textbook">Learn</button>
+        <button type="button" class="nav-item" data-view="journal">Journal</button>
+        <button type="button" class="nav-item" data-view="coach">AI Coach</button>
+      </nav>
+      <div class="topbar-right">
+        <div class="conn" id="conn-indicator">
+          <span class="conn-dot"></span>
+          <span class="conn-label">local engine</span>
+        </div>
+        <button type="button" class="alert-bell" id="alert-bell" title="Smart Alerts">
+          🔔<span class="alert-bell-badge hidden" id="alert-bell-badge">0</span>
+        </button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-logout" title="Log out">Log Out</button>
+      </div>
+    </header>
+
+    <div class="alert-panel hidden" id="alert-panel">
+      <div class="alert-panel-head">
+        <h3>🔔 Smart Alerts</h3>
+        <button type="button" class="btn btn-ghost btn-sm" id="alert-panel-close">✕</button>
+      </div>
+      <div id="alert-panel-list" class="alert-panel-list"></div>
+    </div>
+
+    <main id="view-onboarding" class="view hidden">
+      <div class="onboard-card card-glass">
+        <div class="onboard-progress">
+          <div class="step active" data-step="1"></div>
+          <div class="step" data-step="2"></div>
+        </div>
+
+        <section class="onboard-step active" id="step-1">
+          <h1 class="onboard-title">Welcome to <span class="grad-text">QuantSphere</span></h1>
+          <p class="onboard-sub">Your private trading journal.</p>
+
+          <div class="segmented" id="ob-auth-mode">
+            <button type="button" class="seg-btn seg-buy active" data-value="signup">Create Account</button>
+            <button type="button" class="seg-btn seg-sell" data-value="login">Log In</button>
+          </div>
+
+          <div id="ob-signup-fields">
+            <label class="field">
+              <span>Email</span>
+              <input type="email" id="ob-email" placeholder="you@example.com" autocomplete="email" />
+            </label>
+            <label class="field">
+              <span>Password</span>
+              <input type="password" id="ob-password" placeholder="At least 8 characters" autocomplete="new-password" />
+            </label>
+            <button class="btn btn-primary btn-block" id="ob-create-user">Continue <span class="arrow">→</span></button>
+            <p class="onboard-error" id="ob-error-1"></p>
+          </div>
+
+          <div id="ob-login-fields" class="hidden">
+            <label class="field">
+              <span>Email</span>
+              <input type="email" id="ob-login-email" placeholder="you@example.com" autocomplete="email" />
+            </label>
+            <label class="field">
+              <span>Password</span>
+              <input type="password" id="ob-login-password" placeholder="Your password" autocomplete="current-password" />
+            </label>
+            <button class="btn btn-primary btn-block" id="ob-login-btn">Log In <span class="arrow">→</span></button>
+            <p class="onboard-error" id="ob-login-error"></p>
+          </div>
+        </section>
+
+        <section class="onboard-step" id="step-2">
+          <h1 class="onboard-title">Create your <span class="grad-text">journal</span></h1>
+          <p class="onboard-sub">A portfolio tracks one pool of trades and its balance.</p>
+          <label class="field">
+            <span>Portfolio name</span>
+            <input type="text" id="ob-portfolio-name" placeholder="Main Journal" />
+          </label>
+          <label class="field">
+            <span>Starting balance</span>
+            <input type="number" id="ob-portfolio-balance" placeholder="10000" min="1" step="0.01" />
+          </label>
+          <button class="btn btn-primary btn-block" id="ob-create-portfolio">Enter QuantSphere <span class="arrow">→</span></button>
+          <p class="onboard-error" id="ob-error-2"></p>
+        </section>
+      </div>
+    </main>
+
+    <main id="view-cockpit" class="view hidden">
+      <section class="cockpit-balance-card card-glass">
+        <div class="cockpit-balance-label">Portfolio Balance</div>
+        <div class="cockpit-balance-value" id="cockpit-balance-value">—</div>
+        <div class="cockpit-balance-sub" id="cockpit-portfolio-name">—</div>
+      </section>
+
+      <section class="cockpit-insight-card card-glass" id="cockpit-insight"></section>
+
+      <section class="cockpit-positions-section">
+        <div class="section-head">
+          <h2>Open Positions</h2>
+        </div>
+        <div id="cockpit-positions"></div>
+      </section>
+    </main>
+
+    <main id="view-home" class="view hidden">
+
+      <section class="stats-row">
+        <div class="stat-card card-glass" id="stat-balance">
+          <div class="stat-label">Portfolio Balance</div>
+          <div class="stat-value"><span class="cur">$</span><span id="stat-balance-value" data-count="0">0</span></div>
+          <div class="stat-foot" id="stat-portfolio-name">—</div>
+        </div>
+        <div class="stat-card card-glass" id="stat-trades">
+          <div class="stat-label">Trades Logged</div>
+          <div class="stat-value"><span id="stat-trades-value" data-count="0">0</span></div>
+          <div class="stat-foot"><span id="stat-open-count">0</span> open</div>
+        </div>
+        <div class="stat-card card-glass" id="stat-winrate">
+          <div class="stat-label">Win Rate</div>
+          <div class="stat-value"><span id="stat-winrate-value" data-count="0">0</span><span class="cur">%</span></div>
+          <div class="stat-foot">of closed trades</div>
+        </div>
+        <div class="stat-card card-glass" id="stat-grade">
+          <div class="stat-label">Avg. Phase A Grade</div>
+          <div class="stat-value"><span id="stat-grade-value">—</span></div>
+          <div class="stat-foot">rules-engine score</div>
+        </div>
+      </section>
+
+      <section class="stats-row stats-row-risk">
+        <div class="stat-card card-glass" id="stat-sharpe">
+          <div class="stat-label">Sharpe Ratio</div>
+          <div class="stat-value"><span id="stat-sharpe-value">—</span></div>
+          <div class="stat-foot">risk-adjusted return</div>
+        </div>
+        <div class="stat-card card-glass" id="stat-drawdown">
+          <div class="stat-label">Max Drawdown</div>
+          <div class="stat-value"><span class="cur">$</span><span id="stat-drawdown-value" data-count="0">0</span></div>
+          <div class="stat-foot"><span id="stat-drawdown-pct">—</span> of starting balance</div>
+        </div>
+        <div class="stat-card card-glass" id="stat-health">
+          <div class="stat-label">Trading Health</div>
+          <div class="stat-value"><span id="stat-health-value">—</span></div>
+          <div class="stat-foot" id="stat-health-foot">log more trades to unlock</div>
+        </div>
+      </section>
+
+      <section class="insight-section">
+        <div class="insight-card card-glass" id="insight-card">
+          <div class="insight-head">
+            <h2>🧠 AI Insight</h2>
+            <span class="badge-local">rule-based · instant</span>
+          </div>
+          <p class="insight-body" id="insight-body">Log at least 10 closed trades to unlock your first insight.</p>
+          <button class="btn btn-ghost btn-sm hidden" id="insight-ask-coach">Ask AI Coach to explain →</button>
+        </div>
+      </section>
+
+      <section class="edge-weakness-row">
+        <div class="mini-card card-glass edge" id="edge-card">
+          <div class="mini-card-label">Your Edge</div>
+          <p class="mini-card-body" id="edge-body">Not enough data yet.</p>
+        </div>
+        <div class="mini-card card-glass weakness" id="weakness-card">
+          <div class="mini-card-label">Your Weakness</div>
+          <p class="mini-card-body" id="weakness-body">Not enough data yet.</p>
+        </div>
+      </section>
+
+      <section class="focus-section">
+        <div class="focus-card card-glass" id="focus-card">
+          <div class="mini-card-label">Today's Focus</div>
+          <p class="mini-card-body" id="focus-body">Log more trades so QuantSphere can recommend a focus area.</p>
+        </div>
+      </section>
+
+      <section class="weekly-review-section">
+        <div class="weekly-review-card card-glass" id="weekly-review-card">
+          <div class="section-head">
+            <h2>🗓️ Weekly AI Trading Review</h2>
+            <span class="badge-local">last 7 days · real trades</span>
+          </div>
+          <p class="wr-empty-text hidden" id="wr-empty-text"></p>
+          <div id="wr-content" class="wr-content hidden">
+            <div class="wr-stats" id="wr-stats"></div>
+            <div class="wr-best-worst" id="wr-best-worst"></div>
+            <button class="btn btn-gradient btn-sm" id="wr-narrative-btn">✨ Get AI Summary</button>
+            <div id="wr-narrative-thinking" class="ai-thinking hidden">
+              <div class="ai-orbit"><div class="orbit-dot"></div><div class="orbit-dot"></div><div class="orbit-dot"></div></div>
+              <p class="ai-thinking-text">Your local AI coach is reviewing the week<span id="wr-narrative-elapsed"></span>…</p>
+            </div>
+            <div id="wr-narrative-result" class="wr-narrative-result hidden"></div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <main id="view-markets" class="view hidden">
+      <section class="market-section">
+        <div class="section-head">
+          <h2>Live Market</h2>
+          <span class="section-sub" id="market-source">connecting…</span>
+        </div>
+        <div id="tv-ticker-tape" class="tv-ticker-tape tradingview-widget-container"></div>
+        <div id="market-ticker" class="market-ticker"></div>
+      </section>
+
+      <section class="news-section">
+        <div class="news-breaking" id="news-breaking">
+          <span class="news-breaking-label">🔴 Breaking</span>
+          <div class="news-breaking-viewport">
+            <div class="news-breaking-track" id="news-breaking-track">
+              <span class="news-breaking-item">Loading latest headlines…</span>
+            </div>
+          </div>
+        </div>
+        <div class="section-head">
+          <h2>Market News</h2>
+          <div class="news-tabs" id="news-tabs">
+            <button type="button" class="news-tab active" data-category="international">International</button>
+            <button type="button" class="news-tab" data-category="national">National (India)</button>
+            <button type="button" class="news-tab" data-category="my-symbols">🎯 My Symbols</button>
+          </div>
+        </div>
+        <div id="news-list" class="news-list">
+          <div class="news-loading">Loading headlines…</div>
+        </div>
+      </section>
+    </main>
+
+    <main id="view-trades" class="view hidden">
+      <section class="mt5-bridge-section">
+        <div class="section-head">
+          <h2>MetaTrader 5</h2>
+          <span class="section-sub">sync via desktop bridge</span>
+        </div>
+        <div class="mt5-card card-glass">
+          <p>QuantSphere's hosted server can't connect to your MT5 terminal directly — MT5 only talks to a terminal on the same machine. Run the free <strong>QuantSphere MT5 Bridge</strong> on your own PC instead: it reads your closed trades locally and syncs them here automatically, each one instantly graded.</p>
+          <p class="mt5-hint">Your portfolio id (needed to set up the bridge): <code id="mt5-bridge-portfolio-id">—</code> · setup instructions are in the <code>bridge/README.md</code> file of your QuantSphere installation.</p>
+        </div>
+      </section>
+
+      <section class="mt5-section">
+        <div class="section-head">
+          <h2>MetaTrader 5 (direct connect)</h2>
+          <span class="section-sub">real trades, auto-logged</span>
+        </div>
+        <div class="mt5-card card-glass" id="mt5-card">
+          <div id="mt5-disconnected" class="mt5-state">
+            <div class="mt5-state-text">
+              <p>Connect your MT5 account and every closed trade is journaled here automatically — instantly graded, with the same AI mentor feedback available on demand.</p>
+              <p class="mt5-hint">Requires the MT5 terminal installed on this PC — QuantSphere talks to it locally, not to your broker over the internet.</p>
+            </div>
+            <button class="btn btn-primary" id="btn-mt5-connect">Connect MT5 Account</button>
+          </div>
+          <div id="mt5-connected" class="mt5-state hidden">
+            <div class="mt5-status-row">
+              <span class="mt5-status-dot" id="mt5-status-dot"></span>
+              <div>
+                <div class="mt5-status-title" id="mt5-status-title">Connected</div>
+                <div class="mt5-status-sub" id="mt5-status-sub">—</div>
+              </div>
+            </div>
+            <button class="btn btn-ghost" id="btn-mt5-disconnect">Disconnect</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="trades-section">
+        <div class="section-head">
+          <h2>Your Trades</h2>
+          <div class="section-head-actions">
+            <button class="btn btn-ghost" id="btn-open-setup-check" title="Full pre-trade setup-quality check">🎯 Check My Trade</button>
+            <button class="btn btn-primary" id="btn-new-trade" title="Log a new trade"><span class="plus">+</span> New Trade</button>
+          </div>
+        </div>
+        <div id="trades-empty" class="empty-state hidden">
+          <div class="empty-icon">📓</div>
+          <p>No trades yet. Log your first one to see it graded instantly.</p>
+          <button class="btn btn-primary" id="btn-empty-new-trade">+ New Trade</button>
+        </div>
+        <div id="trades-list" class="trades-list"></div>
+      </section>
+    </main>
+
+    <main id="view-analyze" class="view hidden">
+      <div id="analyze-empty" class="empty-state hidden">
+        <div class="empty-icon">🧬</div>
+        <p id="analyze-empty-text">Log at least 10 closed trades to unlock Trading DNA, the Mistake Detector, and your Trading Health score.</p>
+      </div>
+      <div id="analyze-content" class="hidden">
+        <section class="dna-section card-glass">
+          <div class="section-head">
+            <h2>🧬 Trading DNA</h2>
+            <span class="section-sub">derived from your real closed trades</span>
+          </div>
+          <div class="dna-highlights" id="dna-highlights"></div>
+          <div class="dna-breakdowns" id="dna-breakdowns"></div>
+          <p class="dna-caveat" id="dna-caveat"></p>
+        </section>
+
+        <section class="mistakes-section card-glass">
+          <div class="section-head">
+            <h2>⚠️ Your Trading Mistakes</h2>
+            <span class="section-sub">click a mistake to see the trades behind it</span>
+          </div>
+          <div id="mistakes-list" class="mistakes-list"></div>
+        </section>
+
+        <section class="health-section card-glass">
+          <div class="section-head">
+            <h2>💪 Trading Health</h2>
+            <div class="section-head-actions">
+              <span class="badge-local">computed from real behavior</span>
+              <button class="btn btn-gradient btn-sm" id="health-why-btn">✨ Why?</button>
+            </div>
+          </div>
+          <div class="health-overall" id="health-overall"></div>
+          <div class="health-bars" id="health-bars"></div>
+          <ul class="health-notes" id="health-notes"></ul>
+          <div id="health-why-thinking" class="ai-thinking hidden">
+            <div class="ai-orbit"><div class="orbit-dot"></div><div class="orbit-dot"></div><div class="orbit-dot"></div></div>
+            <p class="ai-thinking-text">Your local AI mentor is thinking<span id="health-why-elapsed"></span>…</p>
+          </div>
+          <div id="health-why-result" class="why-result hidden"></div>
+        </section>
+
+        <section class="progression-section card-glass">
+          <div class="section-head">
+            <h2>📈 Your Progression</h2>
+            <span class="section-sub">real trend vs. your own history — never a fabricated level or badge</span>
+          </div>
+          <div id="progression-content"></div>
+        </section>
+
+        <section class="benchmark-section card-glass">
+          <div class="section-head">
+            <h2>🌐 Anonymous Benchmarking</h2>
+            <span class="section-sub">vs. other real QuantSphere traders — never identifies who</span>
+          </div>
+          <div id="benchmark-content"></div>
+        </section>
+
+        <section class="setup-perf-section card-glass" id="setup-perf-section">
+          <div class="section-head">
+            <h2>📊 Setup Performance</h2>
+            <span class="section-sub">filter your setups by symbol, session, direction, and date</span>
+          </div>
+          <div class="setup-perf-filters" id="setup-perf-filters">
+            <select id="sp-filter-symbol"><option value="">All symbols</option></select>
+            <select id="sp-filter-session">
+              <option value="">All sessions</option>
+              <option value="asian">Asian</option>
+              <option value="london">London</option>
+              <option value="new_york">New York</option>
+              <option value="other">Other</option>
+            </select>
+            <select id="sp-filter-direction">
+              <option value="">Buy &amp; Sell</option>
+              <option value="buy">Buy</option>
+              <option value="sell">Sell</option>
+            </select>
+            <select id="sp-filter-setup"><option value="">All setups</option></select>
+            <input type="date" id="sp-filter-date-from" title="From date" />
+            <input type="date" id="sp-filter-date-to" title="To date" />
+            <button class="btn btn-ghost btn-sm" id="sp-apply-btn">Apply</button>
+          </div>
+          <div id="setup-perf-results"></div>
+        </section>
+      </div>
+    </main>
+
+    <main id="view-journal" class="view hidden">
+      <div class="section-head">
+        <h2>📝 Trade Journal</h2>
+        <span class="section-sub">reflection notes for every trade you've reviewed</span>
+      </div>
+      <div id="journal-empty" class="empty-state hidden">
+        <div class="empty-icon">📝</div>
+        <p>No trades yet. Once you've logged and closed a trade, journal it here.</p>
+      </div>
+      <div id="journal-list" class="journal-list"></div>
+    </main>
+
+    <main id="view-coach" class="view hidden">
+      <div class="coach-layout">
+        <div class="coach-head">
+          <h1>🎓 AI Coach</h1>
+          <p>Grounded in your real trading history — Trading DNA, mistakes, and Trading Health — running entirely locally via Ollama.</p>
+        </div>
+        <div class="chat-messages coach-messages" id="coach-messages"></div>
+        <div class="coach-suggestions" id="coach-suggestions"></div>
+        <div class="chat-input-row">
+          <input type="text" id="coach-input" placeholder="Ask why your win rate is falling, what setup works best for you, and more…" maxlength="2000" />
+          <button class="btn btn-primary" id="coach-send">Send</button>
+        </div>
+      </div>
+    </main>
+
+    <button class="chat-fab" id="btn-chat-toggle" title="Ask the QuantSphere Assistant">💬</button>
+
+    <div class="chat-panel hidden" id="chat-panel">
+      <div class="chat-panel-head">
+        <div>
+          <div class="chat-panel-title">QuantSphere Assistant</div>
+          <div class="chat-panel-sub">100% local · Ollama</div>
+        </div>
+        <button class="modal-close" id="btn-chat-close">&times;</button>
+      </div>
+      <div class="chat-messages" id="chat-messages"></div>
+      <div class="chat-input-row">
+        <input type="text" id="chat-input" placeholder="Ask about a trade, a price, or trading in general…" maxlength="2000" />
+        <button class="btn btn-primary" id="chat-send">Send</button>
+      </div>
+    </div>
+
+    <main id="view-textbook" class="view hidden">
+      <div class="tb-head">
+        <button class="btn btn-ghost" id="btn-close-learn">← Back to Home</button>
+        <div class="tb-head-title">
+          <h1>📚 QuantSphere Trading Textbook</h1>
+          <p>A self-contained reference — from the basics to smart money concepts. Read at your own pace.</p>
+        </div>
+      </div>
+      <div id="tb-next-lesson" class="tb-next-lesson hidden">
+        <span class="tb-next-lesson-icon">🎯</span>
+        <p class="tb-next-lesson-text" id="tb-next-lesson-text"></p>
+        <button class="btn btn-primary btn-sm" id="tb-next-lesson-btn">Go to chapter →</button>
+      </div>
+      <div class="tb-layout">
+        <nav class="tb-nav" id="tb-nav"></nav>
+        <article class="tb-content card-glass" id="tb-content">
+          <div class="tb-loading">Loading…</div>
+        </article>
+      </div>
+    </main>
+
+    <main id="view-backtest" class="view hidden">
+      <div class="tb-head">
+        <button class="btn btn-ghost" id="btn-close-backtest">← Back to Home</button>
+        <div class="tb-head-title">
+          <h1>⏮ Backtest &amp; Replay</h1>
+          <p>Pick a trade from your journal and replay its chart candle-by-candle to review your entry and exit.</p>
+        </div>
+      </div>
+      <div class="bt-mode-switch" id="bt-mode-switch">
+        <button type="button" class="bt-mode-btn active" data-mode="replay">🎯 Decision Training</button>
+        <button type="button" class="bt-mode-btn" data-mode="strategylab">🧪 Strategy Lab</button>
+      </div>
+
+      <div id="bt-mode-replay-panel">
+      <div class="bt-layout">
+        <aside class="bt-trade-list" id="bt-trade-list">
+          <div class="tb-loading">Loading trades…</div>
+        </aside>
+        <div class="bt-main">
+          <div id="bt-empty" class="bt-empty">
+            <div class="empty-icon">⏮</div>
+            <p>Select a trade on the left to replay its chart.</p>
+          </div>
+          <div id="bt-player" class="bt-player hidden">
+            <div class="bt-trade-info card-glass" id="bt-trade-info"></div>
+            <div class="bt-dt-bar">
+              <label class="bt-dt-toggle"><input type="checkbox" id="bt-dt-toggle" checked /> 🎯 Quiz me during replay</label>
+              <span class="bt-dt-accuracy" id="bt-dt-accuracy"></span>
+            </div>
+            <div id="bt-chart-container" class="bt-chart-container"></div>
+            <div id="bt-decision-prompt" class="bt-decision-prompt card-glass hidden">
+              <p class="bt-decision-prompt-text">📍 Decision point — what would you do here, before seeing what happens next?</p>
+              <div class="bt-decision-prompt-actions">
+                <button type="button" class="btn bt-guess-btn bt-guess-buy" data-guess="buy">▲ Buy</button>
+                <button type="button" class="btn bt-guess-btn bt-guess-sell" data-guess="sell">▼ Sell</button>
+                <button type="button" class="btn bt-guess-btn bt-guess-wait" data-guess="wait">✋ Wait</button>
+              </div>
+              <div id="bt-decision-feedback" class="bt-decision-feedback hidden"></div>
+            </div>
+            <div class="bt-controls card-glass">
+              <button class="btn btn-ghost bt-ctrl-btn" id="bt-step-back" title="Step back one candle">⏮</button>
+              <button class="btn btn-primary bt-ctrl-btn" id="bt-play-pause" title="Play / Pause">▶</button>
+              <button class="btn btn-ghost bt-ctrl-btn" id="bt-step-fwd" title="Step forward one candle">⏭</button>
+              <input type="range" id="bt-scrubber" class="bt-scrubber" min="0" max="0" value="0" />
+              <span class="bt-time-label" id="bt-time-label">—</span>
+              <select id="bt-speed" class="bt-speed-select" title="Playback speed">
+                <option value="700">1×</option>
+                <option value="350" selected>2×</option>
+                <option value="150">4×</option>
+                <option value="60">8×</option>
+              </select>
+            </div>
+
+            <div class="bt-mentor card-glass">
+              <div class="bt-mentor-head">
+                <h3>🎓 AI Mentor <span class="badge-local">100% local · Ollama</span></h3>
+                <button class="btn btn-gradient" id="bt-mentor-btn">✨ Teach Me This Trade</button>
+              </div>
+              <p class="bt-mentor-hint">Grounded in the actual price action around your entry and exit — not just the trade's numbers.</p>
+              <div id="bt-mentor-thinking" class="ai-thinking hidden">
+                <div class="ai-orbit"><div class="orbit-dot"></div><div class="orbit-dot"></div><div class="orbit-dot"></div></div>
+                <p class="ai-thinking-text">Your local AI mentor is reading the chart<span id="bt-mentor-elapsed"></span>…</p>
+              </div>
+              <div id="bt-mentor-result" class="bt-mentor-result hidden"></div>
+            </div>
+
+            <div class="bt-journal card-glass">
+              <div class="bt-journal-head">
+                <h3>📝 Trade Journal</h3>
+                <span class="bt-journal-status" id="bt-journal-status"></span>
+              </div>
+              <p class="bt-journal-hint">Your own notes from reviewing this replay — separate from the AI mentor above.</p>
+
+              <label class="field">
+                <span>What did you do well in this trade?</span>
+                <textarea id="bt-journal-what-worked" rows="2" placeholder="e.g. Waited for the retest before entering, sized the position correctly…"></textarea>
+              </label>
+              <label class="field">
+                <span>What would you do differently next time?</span>
+                <textarea id="bt-journal-what-to-improve" rows="2" placeholder="e.g. Entered too early before confirmation, moved my stop too soon…"></textarea>
+              </label>
+              <label class="field">
+                <span>What pattern, level, or concept did you recognize (or miss)?</span>
+                <textarea id="bt-journal-pattern" rows="2" placeholder="e.g. This was a clean support bounce I didn't spot until reviewing it now…"></textarea>
+              </label>
+              <label class="field">
+                <span>Key takeaway / lesson learned</span>
+                <textarea id="bt-journal-lesson" rows="2" placeholder="e.g. Wait for RSI to leave overbought before chasing a breakout…"></textarea>
+              </label>
+              <label class="field">
+                <span>Anything else <span class="optional">(optional)</span></span>
+                <textarea id="bt-journal-notes" rows="2" placeholder="Any other notes worth remembering…"></textarea>
+              </label>
+
+              <button class="btn btn-primary" id="bt-journal-save">Save Journal</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div id="bt-mode-strategylab-panel" class="strategylab-layout hidden">
+        <aside class="strategylab-list card-glass" id="sl-strategy-list">
+          <div class="section-head">
+            <h3>Your Strategies</h3>
+            <button class="btn btn-primary btn-sm" id="sl-new-strategy-btn">+ New</button>
+          </div>
+          <div id="sl-strategies-container" class="sl-strategies-container">
+            <div class="tb-loading">Loading strategies…</div>
+          </div>
+        </aside>
+
+        <div class="strategylab-main">
+          <div id="sl-builder" class="strategylab-builder card-glass hidden">
+            <div class="section-head">
+              <h3>New Strategy</h3>
+              <button type="button" class="btn btn-ghost btn-sm" id="sl-builder-cancel">Cancel</button>
+            </div>
+            <div class="grid-2">
+              <label class="field">
+                <span>Name</span>
+                <input type="text" id="sl-name" placeholder="EMA 9/21 Cross" maxlength="100" />
+              </label>
+              <label class="field">
+                <span>Direction</span>
+                <div class="segmented" id="sl-direction">
+                  <button type="button" class="seg-btn seg-buy active" data-value="buy">BUY</button>
+                  <button type="button" class="seg-btn seg-sell" data-value="sell">SELL</button>
+                </div>
+              </label>
+            </div>
+            <label class="field">
+              <span>Description <span class="optional">(optional)</span></span>
+              <input type="text" id="sl-description" maxlength="500" placeholder="What is this strategy trying to capture?" />
+            </label>
+
+            <div id="sl-conditions" class="sl-conditions"></div>
+            <button type="button" class="btn btn-ghost btn-sm" id="sl-add-condition">+ Add Condition</button>
+
+            <div class="grid-2">
+              <label class="field">
+                <span>Stop Loss %</span>
+                <input type="number" id="sl-stop-loss-pct" min="0.01" max="20" step="0.01" placeholder="0.5" />
+              </label>
+              <label class="field">
+                <span>Target (R multiple)</span>
+                <input type="number" id="sl-target-r" min="0.1" max="20" step="0.1" placeholder="2" />
+              </label>
+            </div>
+
+            <button class="btn btn-primary btn-block" id="sl-save-strategy">Save Strategy</button>
+            <p class="onboard-error" id="sl-builder-error"></p>
+          </div>
+
+          <div id="sl-backtest-panel" class="strategylab-backtest card-glass hidden">
+            <div class="section-head">
+              <h3 id="sl-backtest-title">Backtest</h3>
+              <button type="button" class="btn btn-ghost btn-sm" id="sl-delete-strategy-btn">🗑 Delete</button>
+            </div>
+            <div class="grid-2">
+              <label class="field">
+                <span>Symbol</span>
+                <input type="text" id="sl-bt-symbol" placeholder="EURUSD" />
+              </label>
+              <label class="field">
+                <span>Interval</span>
+                <select class="field-select" id="sl-bt-interval"></select>
+              </label>
+            </div>
+            <div class="grid-2">
+              <label class="field">
+                <span>Lookback window</span>
+                <select class="field-select" id="sl-bt-range"></select>
+              </label>
+              <label class="field">
+                <span>Max Holding Bars</span>
+                <input type="number" id="sl-bt-max-bars" min="1" max="500" value="48" />
+              </label>
+            </div>
+            <button class="btn btn-gradient btn-block" id="sl-run-backtest">▶ Run Backtest</button>
+            <p class="onboard-error" id="sl-backtest-error"></p>
+
+            <div id="sl-backtest-loading" class="ai-thinking hidden">
+              <div class="ai-orbit"><div class="orbit-dot"></div><div class="orbit-dot"></div><div class="orbit-dot"></div></div>
+              <p class="ai-thinking-text">Simulating on real historical candles…</p>
+            </div>
+
+            <div id="sl-results" class="strategylab-results hidden">
+              <div class="strategylab-metrics" id="sl-metrics"></div>
+              <div id="sl-equity-chart-container" class="sl-equity-chart-container"></div>
+              <div class="sl-trades-table-wrap">
+                <table class="dna-table" id="sl-trades-table">
+                  <thead><tr><th>Entry</th><th>Exit</th><th>Bars</th><th>Exit Reason</th><th>R</th></tr></thead>
+                  <tbody id="sl-trades-tbody"></tbody>
+                </table>
+              </div>
+              <p class="sl-disclaimer" id="sl-disclaimer"></p>
+            </div>
+          </div>
+
+          <div id="sl-empty" class="empty-state">
+            <div class="empty-icon">🧪</div>
+            <p>Create a strategy on the left, then run it against real historical candles — no guesswork, no fabricated stats.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- MT5 Connect Modal -->
+  <div class="modal-backdrop hidden" id="modal-mt5-connect">
+    <div class="modal card-glass">
+      <button class="modal-close" data-close>&times;</button>
+      <h2 class="modal-title">Connect MT5 Account</h2>
+      <p class="modal-sub">Your credentials are encrypted at rest and only ever used to talk to the MT5 terminal installed on this PC.</p>
+      <label class="field">
+        <span>Login (account number)</span>
+        <input type="number" id="mt5-login" placeholder="12345678" />
+      </label>
+      <label class="field">
+        <span>Password</span>
+        <input type="password" id="mt5-password" placeholder="Investor (read-only) password recommended" autocomplete="off" />
+      </label>
+      <label class="field">
+        <span>Server</span>
+        <input type="text" id="mt5-server" placeholder="YourBroker-Demo" />
+      </label>
+      <label class="field">
+        <span>Terminal path <span class="optional">(optional)</span></span>
+        <input type="text" id="mt5-terminal-path" placeholder="C:\Program Files\MetaTrader 5\terminal64.exe" />
+      </label>
+      <button class="btn btn-primary btn-block" id="mt5-connect-submit">Connect <span class="arrow">→</span></button>
+      <p class="onboard-error" id="mt5-connect-error"></p>
+    </div>
+  </div>
+
+  <!-- New Trade Modal -->
+  <div class="modal-backdrop hidden" id="modal-new-trade">
+    <div class="modal card-glass">
+      <button class="modal-close" data-close>&times;</button>
+      <h2 class="modal-title">Log a Trade</h2>
+      <div class="grid-2">
+        <label class="field">
+          <span>Symbol</span>
+          <input type="text" id="nt-symbol" placeholder="EURUSD" />
+        </label>
+        <label class="field">
+          <span>Direction</span>
+          <div class="segmented" id="nt-direction">
+            <button type="button" class="seg-btn seg-buy active" data-value="buy">BUY</button>
+            <button type="button" class="seg-btn seg-sell" data-value="sell">SELL</button>
+          </div>
+        </label>
+      </div>
+      <div class="grid-2">
+        <label class="field">
+          <span>Volume (lots)</span>
+          <input type="number" id="nt-volume" placeholder="1.0" min="0.01" step="0.01" />
+        </label>
+        <label class="field">
+          <span>Open Price</span>
+          <input type="number" id="nt-open-price" placeholder="1.0850" min="0.00001" step="0.00001" />
+        </label>
+      </div>
+      <label class="field">
+        <span>Open Time</span>
+        <input type="datetime-local" id="nt-open-time" />
+      </label>
+      <label class="field">
+        <span>Notes <span class="optional">(optional)</span></span>
+        <textarea id="nt-comment" rows="2" placeholder="Why did you take this trade?"></textarea>
+      </label>
+      <button class="btn btn-primary btn-block" id="nt-submit">Open Trade</button>
+      <p class="onboard-error" id="nt-error"></p>
+    </div>
+  </div>
+
+  <!-- Market Chart / Trade Modal -->
+  <div class="modal-backdrop hidden" id="modal-chart">
+    <div class="modal modal-wide modal-chart-lg card-glass">
+      <button class="modal-close" data-close>&times;</button>
+      <div class="chart-head">
+        <div>
+          <div class="detail-symbol" id="chart-symbol">EURUSD</div>
+          <div class="chart-price-live" id="chart-live-price">—</div>
+        </div>
+        <span class="section-sub">live · TradingView</span>
+      </div>
+      <div id="tv-chart-container" class="tv-chart-container tradingview-widget-container"></div>
+
+      <div class="detail-section">
+        <h3>Paper Trade at Market <span class="badge-local">live price · no manual entry</span></h3>
+        <div class="grid-2">
+          <label class="field">
+            <span>Volume (lots)</span>
+            <input type="number" id="mkt-volume" placeholder="1.0" min="0.01" step="0.01" value="1.0" />
+          </label>
+          <label class="field">
+            <span>Notes <span class="optional">(optional)</span></span>
+            <input type="text" id="mkt-comment" placeholder="Why this trade?" />
+          </label>
+        </div>
+
+        <div class="pretrade-check" id="pretrade-check">
+          <div class="pretrade-head">
+            <span>🎓 Pre-Trade Check</span>
+            <span class="badge-local">instant · local rules engine</span>
+          </div>
+          <div class="pretrade-body" id="pretrade-body">
+            <span class="pretrade-loading">Checking position size and momentum…</span>
+          </div>
+        </div>
+
+        <div class="market-order-actions">
+          <button class="btn market-buy" id="mkt-buy">
+            ▲ Buy at Market
+            <span class="pretrade-note" id="pretrade-buy-note"></span>
+          </button>
+          <button class="btn market-sell" id="mkt-sell">
+            ▼ Sell at Market
+            <span class="pretrade-note" id="pretrade-sell-note"></span>
+          </button>
+        </div>
+        <p class="onboard-error" id="mkt-error"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Close Trade Modal -->
+  <div class="modal-backdrop hidden" id="modal-close-trade">
+    <div class="modal card-glass">
+      <button class="modal-close" data-close>&times;</button>
+      <h2 class="modal-title">Close Trade</h2>
+      <p class="modal-sub" id="ct-symbol-label"></p>
+      <label class="field">
+        <span>Close Price</span>
+        <input type="number" id="ct-close-price" placeholder="1.0920" min="0.00001" step="0.00001" />
+      </label>
+      <label class="field">
+        <span>Close Time</span>
+        <input type="datetime-local" id="ct-close-time" />
+      </label>
+      <div class="grid-2">
+        <label class="field">
+          <span>Swap <span class="optional">(optional)</span></span>
+          <input type="number" id="ct-swap" placeholder="0" step="0.01" value="0" />
+        </label>
+        <label class="field">
+          <span>Commission <span class="optional">(optional)</span></span>
+          <input type="number" id="ct-commission" placeholder="0" step="0.01" value="0" />
+        </label>
+      </div>
+      <button class="btn btn-primary btn-block" id="ct-submit">Close & Grade Instantly <span class="bolt">⚡</span></button>
+      <p class="onboard-error" id="ct-error"></p>
+    </div>
+  </div>
+
+  <!-- Check My Trade Modal -->
+  <div class="modal-backdrop hidden" id="modal-setup-check">
+    <div class="modal modal-wide card-glass">
+      <button class="modal-close" data-close>&times;</button>
+      <h2 class="modal-title">🎯 Check My Trade</h2>
+      <p class="modal-sub">A deeper, rule-based setup-quality check — decision support, not a guarantee. For a quick position-size check before a market order, use Buy/Sell at Market instead.</p>
+
+      <div class="grid-2">
+        <label class="field">
+          <span>Symbol</span>
+          <div class="symbol-with-regime">
+            <input type="text" id="sc-symbol" placeholder="EURUSD" />
+            <button type="button" class="btn btn-ghost btn-sm" id="sc-regime-btn" title="Check current market regime">📡 Regime</button>
+          </div>
+          <div id="sc-regime-badge" class="regime-badge hidden"></div>
+        </label>
+        <label class="field">
+          <span>Direction</span>
+          <div class="segmented" id="sc-direction">
+            <button type="button" class="seg-btn seg-buy active" data-value="buy">BUY</button>
+            <button type="button" class="seg-btn seg-sell" data-value="sell">SELL</button>
+          </div>
+        </label>
+      </div>
+      <div class="grid-2">
+        <label class="field">
+          <span>Entry Price</span>
+          <input type="number" id="sc-entry" placeholder="1.0850" min="0.00001" step="0.00001" />
+        </label>
+        <label class="field">
+          <span>Position Size</span>
+          <input type="number" id="sc-size" placeholder="1.0" min="0.01" step="0.01" />
+        </label>
+      </div>
+      <div class="grid-2">
+        <label class="field">
+          <span>Stop Loss <span class="optional">(optional)</span></span>
+          <input type="number" id="sc-sl" placeholder="1.0800" min="0.00001" step="0.00001" />
+        </label>
+        <label class="field">
+          <span>Take Profit <span class="optional">(optional)</span></span>
+          <input type="number" id="sc-tp" placeholder="1.0950" min="0.00001" step="0.00001" />
+        </label>
+      </div>
+      <div class="grid-2">
+        <label class="field">
+          <span>Setup <span class="optional">(optional)</span></span>
+          <select class="field-select" id="sc-setup-select">
+            <option value="">None</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Timeframe <span class="optional">(optional)</span></span>
+          <input type="text" id="sc-timeframe" placeholder="1h" maxlength="20" />
+        </label>
+      </div>
+      <label class="field">
+        <span>Reason for entry <span class="optional">(optional)</span></span>
+        <textarea id="sc-reason" rows="2" placeholder="Why does this setup look valid?"></textarea>
+      </label>
+      <label class="field">
+        <span>Confirmation <span class="optional">(optional)</span></span>
+        <textarea id="sc-confirmation" rows="2" placeholder="What confirmed the entry?"></textarea>
+      </label>
+
+      <button class="btn btn-primary btn-block" id="sc-submit">Check Setup</button>
+      <p class="onboard-error" id="sc-error"></p>
+
+      <div id="sc-result" class="sc-result hidden"></div>
+    </div>
+  </div>
+
+  <!-- Trade Detail Modal -->
+  <div class="modal-backdrop hidden" id="modal-detail">
+    <div class="modal modal-wide card-glass">
+      <button class="modal-close" data-close>&times;</button>
+      <div class="detail-head">
+        <div>
+          <div class="detail-symbol" id="det-symbol">EURUSD</div>
+          <div class="detail-meta" id="det-meta">buy · 1.0 lots</div>
+        </div>
+        <div class="detail-badges" id="det-badges"></div>
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail-block">
+          <span class="detail-block-label">Open</span>
+          <span class="detail-block-value" id="det-open">—</span>
+        </div>
+        <div class="detail-block">
+          <span class="detail-block-label">Close</span>
+          <span class="detail-block-value" id="det-close">—</span>
+        </div>
+        <div class="detail-block">
+          <span class="detail-block-label">P&amp;L</span>
+          <span class="detail-block-value" id="det-pnl">—</span>
+        </div>
+      </div>
+
+      <p class="detail-comment" id="det-comment"></p>
+
+      <div class="detail-actions" id="det-actions"></div>
+
+      <div class="detail-section">
+        <h3>Setup</h3>
+        <div class="setup-picker-row">
+          <select class="field-select" id="det-setup-select">
+            <option value="">No setup tagged</option>
+          </select>
+          <button class="btn btn-ghost btn-sm" id="det-setup-new-btn">+ New setup</button>
+        </div>
+        <div class="setup-new-row hidden" id="det-setup-new-row">
+          <input type="text" id="det-setup-new-name" placeholder="e.g. Breakout" maxlength="100" />
+          <button class="btn btn-primary btn-sm" id="det-setup-new-save">Add</button>
+        </div>
+      </div>
+
+      <div class="detail-section" id="det-similarity-section">
+        <h3>Similar Trades</h3>
+        <button class="btn btn-ghost btn-sm" id="det-similar-btn">🔍 Find Similar Trades</button>
+        <div id="det-similar-result" class="similar-result hidden"></div>
+      </div>
+
+      <div class="detail-section" id="det-screenshot-section">
+        <h3>Screenshot</h3>
+        <div class="dropzone" id="det-dropzone">
+          <input type="file" id="det-file-input" accept="image/png,image/jpeg,image/webp" hidden />
+          <div class="dropzone-inner" id="dropzone-inner">
+            <div class="dropzone-icon">🖼️</div>
+            <p>Drop a chart screenshot here, or click to choose</p>
+          </div>
+        </div>
+        <div class="screenshot-preview hidden" id="screenshot-preview">
+          <img id="screenshot-img" alt="Trade screenshot" />
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h3>AI Mentor Feedback <span class="badge-local">100% local · Ollama</span></h3>
+        <div id="ai-idle" class="ai-idle">
+          <button class="btn btn-gradient btn-block" id="btn-analyze">✨ Analyze with AI</button>
+          <p class="ai-hint">Runs entirely on this PC. First response can take a few minutes on CPU-only hardware.</p>
+        </div>
+        <div id="ai-thinking" class="ai-thinking hidden">
+          <div class="ai-orbit"><div class="orbit-dot"></div><div class="orbit-dot"></div><div class="orbit-dot"></div></div>
+          <p class="ai-thinking-text">Your local AI mentor is thinking<span id="ai-elapsed"></span>…</p>
+          <p class="ai-hint">This all happens on your machine — no data leaves this PC.</p>
+        </div>
+        <div id="ai-result" class="ai-result hidden"></div>
+        <div id="ai-history" class="ai-history"></div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottom-tab-bar" id="bottom-tab-bar">
+    <button type="button" class="tab-item active" data-view="cockpit"><span>🏠</span>Cockpit</button>
+    <button type="button" class="tab-item" data-view="trades"><span>📓</span>Trades</button>
+    <button type="button" class="tab-item" data-view="analyze"><span>🧬</span>Analyze</button>
+    <button type="button" class="tab-item" data-view="coach"><span>💬</span>Coach</button>
+  </nav>
+
+  <div id="toast-stack"></div>
+
+  <script src="/vendor/lightweight-charts.standalone.production.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

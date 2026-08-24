@@ -1,0 +1,64 @@
+<h2>Reading Charts</h2>
+<p class="tb-subtitle">Candlesticks, timeframes, and how to actually look at a chart instead of just at it.</p>
+
+<h3>Chart types</h3>
+<ul>
+  <li><strong>Line chart</strong> — connects closing prices only. Clean, but hides a lot of detail.</li>
+  <li><strong>Bar chart (OHLC)</strong> — shows open, high, low, close as tick marks on a vertical line.</li>
+  <li><strong>Candlestick chart</strong> — the industry standard. Same OHLC data as a bar chart, but visually much easier to read at a glance. Every chart in QuantSphere is a candlestick chart.</li>
+</ul>
+
+<h3>Anatomy of a candlestick</h3>
+<div class="tb-diagram">
+  <svg viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg">
+    <line x1="30" y1="20" x2="30" y2="230" stroke="#3a4159" stroke-width="1"/>
+    <line x1="30" y1="230" x2="400" y2="230" stroke="#3a4159" stroke-width="1"/>
+
+    <!-- Bullish candle -->
+    <line x1="130" y1="40" x2="130" y2="200" stroke="#22e58a" stroke-width="2"/>
+    <rect x="105" y="90" width="50" height="80" fill="#22e58a" rx="2"/>
+    <text x="130" y="30" fill="#8992ad" font-size="12" text-anchor="middle" font-family="JetBrains Mono, monospace">High</text>
+    <text x="130" y="215" fill="#8992ad" font-size="12" text-anchor="middle" font-family="JetBrains Mono, monospace">Low</text>
+    <text x="170" y="94" fill="#eef1fb" font-size="12" font-family="JetBrains Mono, monospace">Close</text>
+    <text x="170" y="175" fill="#eef1fb" font-size="12" font-family="JetBrains Mono, monospace">Open</text>
+    <text x="130" y="248" fill="#eef1fb" font-size="13" text-anchor="middle" font-weight="600">Bullish (close &gt; open)</text>
+
+    <!-- Bearish candle -->
+    <line x1="300" y1="30" x2="300" y2="210" stroke="#ff5c7c" stroke-width="2"/>
+    <rect x="275" y="70" width="50" height="80" fill="#ff5c7c" rx="2"/>
+    <text x="300" y="22" fill="#8992ad" font-size="12" text-anchor="middle" font-family="JetBrains Mono, monospace">High</text>
+    <text x="300" y="225" fill="#8992ad" font-size="12" text-anchor="middle" font-family="JetBrains Mono, monospace">Low</text>
+    <text x="335" y="74" fill="#eef1fb" font-size="12" font-family="JetBrains Mono, monospace">Open</text>
+    <text x="335" y="155" fill="#eef1fb" font-size="12" font-family="JetBrains Mono, monospace">Close</text>
+    <text x="300" y="248" fill="#eef1fb" font-size="13" text-anchor="middle" font-weight="600">Bearish (close &lt; open)</text>
+  </svg>
+  <div class="tb-diagram-caption">The thin line is the "wick" (high/low range); the thick block is the "body" (open/close range).</div>
+</div>
+
+<p>A green (or hollow/white, depending on theme) candle means price closed <em>higher</em> than it opened for that period — buyers won. A red (or filled/black) candle means it closed <em>lower</em> — sellers won. The wicks show the full range that price explored before settling at the close.</p>
+
+<h3>Timeframes</h3>
+<p>Every candle represents a fixed period — 1 minute, 1 hour, 1 day, and so on. The same price action looks completely different depending on the timeframe you're viewing:</p>
+<div class="tb-grid-2">
+  <div class="tb-card">
+    <div class="tb-card-label">Lower timeframes (1m–1h)</div>
+    <p>More noise, more trade opportunities, tighter stops needed. Popular for day trading and scalping.</p>
+  </div>
+  <div class="tb-card">
+    <div class="tb-card-label">Higher timeframes (4h–1W)</div>
+    <p>Cleaner trend structure, fewer false signals, wider stops needed. Popular for swing and position trading.</p>
+  </div>
+</div>
+<p>A common approach: check a higher timeframe first to determine the overall trend/context, then drop to a lower timeframe to time your actual entry within that context.</p>
+
+<h3>What a single candle can tell you</h3>
+<ul>
+  <li><strong>Long body, short wicks</strong> — strong, decisive move in one direction.</li>
+  <li><strong>Short body, long wicks</strong> — indecision; price was pushed one way and rejected back.</li>
+  <li><strong>Long wick on one side only</strong> — price tried to go further but got rejected — often meaningful near support/resistance (see the Price Action chapter for pin bars specifically).</li>
+</ul>
+
+<div class="tb-callout">
+  <span class="tb-callout-icon">💡</span>
+  <div>Open a chart in QuantSphere right now and just look — pick any symbol from the Live Market section, click it, and try to describe the last 10 candles in plain English before reading further chapters. That instinct is exactly what the next few chapters formalize.</div>
+</div>

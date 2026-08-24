@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+.git/
+.env
+*.db
+media/trade_screenshots/**
+!media/trade_screenshots/.gitkeep
+tests/
+.pytest_cache/
+mobile/node_modules/
+mobile/android/.gradle/
+mobile/android/app/build/
+mobile/android/build/
+mobile/ios/App/Pods/
+mobile/ios/App/build/
+*.log

@@ -1,0 +1,23 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+.env.*
+media/trade_screenshots/**
+!media/trade_screenshots/.gitkeep
+*.db
+*.log
+deploy/windows/logs/
+build/
+*.egg-info/
+
+# mobile/ (Capacitor) — dependencies and native build output, not source
+mobile/node_modules/
+mobile/android/.gradle/
+mobile/android/app/build/
+mobile/android/build/
+mobile/android/local.properties
+mobile/android/.idea/
+mobile/ios/App/Pods/
+mobile/ios/App/build/
+mobile/ios/App/DerivedData/

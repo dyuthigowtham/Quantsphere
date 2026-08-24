@@ -1,0 +1,9 @@
+{
+  "appId": "com.quantsphere.app",
+  "appName": "QuantSphere",
+  "webDir": "www",
+  "server": {
+    "url": "https://REPLACE_WITH_YOUR_DEPLOYED_DOMAIN",
+    "cleartext": true
+  }
+}

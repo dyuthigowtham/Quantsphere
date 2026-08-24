@@ -1,0 +1,74 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: quantsphere
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set a real POSTGRES_PASSWORD in your .env file}
+      POSTGRES_DB: quantsphere
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U quantsphere"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    volumes:
+      - ollama_data:/root/.ollama
+    # No ports published — only the `app` service ever talks to Ollama, over
+    # the internal compose network at http://ollama:11434. Never expose this
+    # publicly; it has no auth of its own.
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+    environment:
+      ENVIRONMENT: production
+      DATABASE_URL: postgresql+asyncpg://quantsphere:${POSTGRES_PASSWORD:?Set a real POSTGRES_PASSWORD in your .env file}@db:5432/quantsphere
+      OLLAMA_BASE_URL: http://ollama:11434
+      JWT_SECRET: ${JWT_SECRET:?Set a real JWT_SECRET in your .env file — generate one with: openssl rand -hex 32}
+      JWT_EXPIRE_MINUTES: ${JWT_EXPIRE_MINUTES:-1440}
+      # MT5 direct-connect is architecturally incompatible with multiple
+      # hosted users (see bridge/README.md for the supported alternative) —
+      # stays off here regardless of what's set locally.
+      MT5_ENABLED: "false"
+    volumes:
+      - media_data:/app/media
+    ports:
+      - "8000:8000"
+
+  # Optional: automatic HTTPS reverse proxy for a real domain. Point your
+  # domain's DNS at this host, set DOMAIN below, and Caddy handles
+  # certificate issuance/renewal with zero extra config. Comment this whole
+  # service out (and the `app` ports line stays as your public entrypoint
+  # instead) if you're fronting this with something else already.
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:?Set your real domain in your .env file, e.g. quantsphere.example.com}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  db_data:
+  ollama_data:
+  media_data:
+  caddy_data:
+  caddy_config:

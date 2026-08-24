@@ -1,0 +1,56 @@
+<h2>Smart Money Concepts (SMC)</h2>
+<p class="tb-subtitle">A framework built around how large institutional orders are believed to move price — order blocks, liquidity, fair value gaps, and structure shifts.</p>
+
+<p>"Smart Money Concepts" is a popular modern take on price action, built on one core premise: retail-sized orders don't move markets, but large institutional orders do — and those large orders leave identifiable footprints. SMC tries to read those footprints. It's a lens for interpreting the same raw candles you already know how to read, not a different market.</p>
+
+<div class="tb-callout warn">
+  <span class="tb-callout-icon">⚠️</span>
+  <div>Treat SMC as one useful vocabulary for describing price behavior — not a guaranteed map of what "the institutions" are literally doing. Nobody outside the actual desks placing those orders knows their true intent; SMC concepts are inferred patterns, and like every framework in this textbook, they fail plenty of the time too.</div>
+</div>
+
+<h3>Liquidity &amp; liquidity sweeps</h3>
+<p><strong>Liquidity</strong> in this context means clusters of resting orders — stop-losses sitting just beyond an obvious swing high or low, and pending orders from breakout traders. A <strong>liquidity sweep</strong> (or "stop hunt") is when price pokes just beyond that obvious level — triggering those resting orders — then sharply reverses.</p>
+<div class="tb-diagram">
+  <svg viewBox="0 0 400 170" xmlns="http://www.w3.org/2000/svg">
+    <line x1="20" y1="110" x2="300" y2="110" stroke="#8992ad" stroke-width="1.5" stroke-dasharray="6,4"/>
+    <polyline points="20,60 80,105 140,95 200,108 260,130 300,150 330,60" fill="none" stroke="#eef1fb" stroke-width="2"/>
+    <text x="300" y="105" fill="#8992ad" font-size="11" text-anchor="end">Obvious swing low</text>
+    <text x="300" y="163" fill="#ff5c7c" font-size="11" text-anchor="middle">Sweep (stops triggered)</text>
+    <text x="330" y="50" fill="#22e58a" font-size="11" text-anchor="middle">Sharp reversal</text>
+  </svg>
+  <div class="tb-diagram-caption">Price briefly breaks below an obvious swing low — where short-sellers' entries and long-holders' stop-losses cluster — then snaps back above it. SMC reads this as liquidity being "grabbed" before the real move.</div>
+</div>
+
+<h3>Fair Value Gap (FVG)</h3>
+<p>A Fair Value Gap is an imbalance left when price moves so fast that one candle's range doesn't overlap with the candle two bars earlier — leaving a visible "gap" in the price action. The idea is that price often (not always) returns to partially "fill" this gap before continuing.</p>
+<div class="tb-diagram">
+  <svg viewBox="0 0 300 170" xmlns="http://www.w3.org/2000/svg">
+    <line x1="60" y1="130" x2="60" y2="80" stroke="#8992ad" stroke-width="2"/>
+    <rect x="48" y="100" width="24" height="20" fill="#8992ad" rx="2"/>
+    <line x1="130" y1="60" x2="130" y2="20" stroke="#22e58a" stroke-width="2"/>
+    <rect x="118" y="20" width="24" height="30" fill="#22e58a" rx="2"/>
+    <rect x="80" y="65" width="40" height="35" fill="#7c5cff" opacity="0.25"/>
+    <line x1="200" y1="90" x2="200" y2="40" stroke="#8992ad" stroke-width="2"/>
+    <rect x="188" y="40" width="24" height="30" fill="#8992ad" rx="2"/>
+    <text x="100" y="120" fill="#7c5cff" font-size="11" text-anchor="middle">FVG (imbalance)</text>
+  </svg>
+  <div class="tb-diagram-caption">Candle 1's high and candle 3's low leave a gap that candle 2 (the big impulsive move) jumped straight through. That shaded zone is the Fair Value Gap — often watched as a potential area for price to retrace into before resuming.</div>
+</div>
+
+<h3>Order block</h3>
+<p>An order block is typically the <strong>last opposite-direction candle before a strong, decisive move</strong> — e.g. the final down-close candle right before a sharp rally. SMC treats this candle's range as a zone where large buy orders were likely placed, and watches for price to return to it as a potential support zone on a later pullback.</p>
+
+<h3>Break of Structure (BOS) vs. Change of Character (CHOCH)</h3>
+<p>Building directly on the market-structure idea from the Price Action chapter:</p>
+<ul>
+  <li><strong>BOS (Break of Structure)</strong> — price breaks the most recent swing <em>in the direction of the existing trend</em> (a new Higher High in an uptrend). Confirms the trend is continuing.</li>
+  <li><strong>CHOCH (Change of Character)</strong> — price breaks the most recent swing <em>against</em> the existing trend (breaking below the last Higher Low in an uptrend). Often the earliest structural warning that the trend may be reversing.</li>
+</ul>
+
+<h3>Premium &amp; discount zones</h3>
+<p>Within any recent price range, SMC splits it into an upper half ("premium" — relatively expensive, a zone to look for shorts) and a lower half ("discount" — relatively cheap, a zone to look for longs), typically using a simple 50% midpoint (Fibonacci-style) of the range.</p>
+
+<div class="tb-callout">
+  <span class="tb-callout-icon">💡</span>
+  <div>Notice how much of SMC is really support/resistance, market structure, and price action from earlier chapters — dressed in newer terminology, with a specific theory (institutional footprints) layered on top. Understanding the fundamentals first makes SMC click much faster than trying to learn it in isolation.</div>
+</div>

@@ -1,0 +1,55 @@
+<h2>Risk Management</h2>
+<p class="tb-subtitle">The least exciting chapter and the one that actually determines whether you're still trading in a year.</p>
+
+<p>Every chapter before this one was about finding an edge — a reason to think a trade might work. This chapter is about surviving being wrong, because you will be wrong often, no matter how good your analysis gets. Professional traders aren't right more often than amateurs by some huge margin; they lose less when they're wrong and let winners run when they're right.</p>
+
+<h3>The 1-2% rule</h3>
+<p>A widely used rule of thumb: risk no more than 1-2% of your total account balance on any single trade. This isn't about being timid — it's math. Position size (not stop-loss distance alone) is what determines how much of your account is actually on the line.</p>
+
+<h3>Position sizing, worked example</h3>
+<div class="tb-callout">
+  <span class="tb-callout-icon">🧮</span>
+  <div>
+    Account balance: <strong>$10,000</strong> · Risk per trade: <strong>1% = $100</strong> · Stop-loss distance: <strong>50 pips</strong><br/>
+    Position size = Risk amount ÷ Stop distance = <strong>$100 ÷ 50 pips = $2 per pip</strong> — that's your maximum position size for this trade, regardless of how confident you feel.
+  </div>
+</div>
+<p>This is exactly what QuantSphere's <strong>Pre-Trade Check</strong> is flagging when it shows a risk percentage before you confirm a market order — it's doing this same calculation against your live portfolio balance in real time.</p>
+
+<h3>Why drawdown math is brutal</h3>
+<p>Losses and the gains needed to recover them are <em>not symmetric</em> — this is the single most underrated fact in trading:</p>
+<div class="tb-grid-2">
+  <div class="tb-card"><div class="tb-card-label bad">Lose 10%</div><p>Needs <strong>+11.1%</strong> to recover</p></div>
+  <div class="tb-card"><div class="tb-card-label bad">Lose 25%</div><p>Needs <strong>+33.3%</strong> to recover</p></div>
+  <div class="tb-card"><div class="tb-card-label bad">Lose 50%</div><p>Needs <strong>+100%</strong> to recover</p></div>
+  <div class="tb-card"><div class="tb-card-label bad">Lose 75%</div><p>Needs <strong>+300%</strong> to recover</p></div>
+</div>
+<p>This is exactly why QuantSphere's dashboard tracks <strong>Max Drawdown</strong> as a first-class metric alongside win rate and Sharpe ratio — the size of your worst stretch matters more than almost anything else for long-term survival.</p>
+
+<h3>Risk-reward beats win rate</h3>
+<p>A trader who wins only 40% of the time can still be highly profitable — if their average winner is bigger than their average loser. A trader who wins 70% of the time can still go broke — if their rare losses are catastrophic.</p>
+<div class="tb-grid-2">
+  <div class="tb-card">
+    <div class="tb-card-label bad">40% win rate, 1:3 R:R</div>
+    <p>4 wins × 3R − 6 losses × 1R = <strong>+6R</strong> net over 10 trades</p>
+  </div>
+  <div class="tb-card">
+    <div class="tb-card-label good">70% win rate, 1:0.5 R:R</div>
+    <p>7 wins × 0.5R − 3 losses × 1R = <strong>+0.5R</strong> net over 10 trades</p>
+  </div>
+</div>
+<p>Both examples are "profitable," but the first has far more breathing room. Always know your risk-reward ratio <em>before</em> entering — not after.</p>
+
+<h3>A short, practical checklist</h3>
+<ul>
+  <li>Decide your risk per trade (as a % of balance) before you look for a setup, not after.</li>
+  <li>Know your stop-loss level before you enter — "I'll figure it out if it goes wrong" is not a plan.</li>
+  <li>Size the position to fit the stop, never the other way around.</li>
+  <li>Track your results honestly — QuantSphere grades and journals every trade automatically for exactly this reason.</li>
+  <li>Expect losing streaks. They happen to every strategy; the question is whether your sizing lets you survive one.</li>
+</ul>
+
+<div class="tb-callout">
+  <span class="tb-callout-icon">💡</span>
+  <div>This closes the loop back to Chapter 1: strategy gets you into good trades, but risk management is what determines whether you're still around to take the next one. Use the Pre-Trade Check on every trade you open in QuantSphere until sizing correctly becomes second nature.</div>
+</div>
