@@ -105,6 +105,7 @@
             </label>
             <button class="btn btn-primary btn-block" id="ob-login-btn">Log In <span class="arrow">→</span></button>
             <p class="onboard-error" id="ob-login-error"></p>
+            <button type="button" class="link-btn" id="ob-forgot-password-link">Forgot password?</button>
           </div>
         </section>
 
@@ -1008,6 +1009,42 @@
     <button type="button" class="tab-item" data-view="analyze"><span>🧬</span>Analyze</button>
     <button type="button" class="tab-item" data-view="coach"><span>💬</span>Coach</button>
   </nav>
+
+  <!-- Forgot Password -->
+  <div class="modal-backdrop hidden" id="modal-forgot-password">
+    <div class="modal card-glass">
+      <button class="modal-close" data-close>&times;</button>
+      <h2 class="modal-title">Reset your password</h2>
+      <p class="modal-sub">Enter your account email and we'll send a reset link if it matches an account.</p>
+      <div id="fp-form">
+        <label class="field">
+          <span>Email</span>
+          <input type="email" id="fp-email" placeholder="you@example.com" autocomplete="email" />
+        </label>
+        <button class="btn btn-primary btn-block" id="fp-submit-btn">Send reset link</button>
+        <p class="onboard-error" id="fp-error"></p>
+      </div>
+      <p class="section-sub hidden" id="fp-success">If an account exists for that email, a reset link is on its way — check your inbox (and spam folder).</p>
+    </div>
+  </div>
+
+  <!-- Reset Password (opened automatically from the emailed link) -->
+  <div class="modal-backdrop hidden" id="modal-reset-password">
+    <div class="modal card-glass">
+      <button class="modal-close" data-close>&times;</button>
+      <h2 class="modal-title">Set a new password</h2>
+      <p class="modal-sub">Choose a new password for your QuantSphere account.</p>
+      <div id="rp-form">
+        <label class="field">
+          <span>New password</span>
+          <input type="password" id="rp-password" placeholder="At least 8 characters" autocomplete="new-password" />
+        </label>
+        <button class="btn btn-primary btn-block" id="rp-submit-btn">Update password</button>
+        <p class="onboard-error" id="rp-error"></p>
+      </div>
+      <p class="section-sub hidden" id="rp-success">Password updated — you can log in with it now.</p>
+    </div>
+  </div>
 
   <div id="toast-stack"></div>
 

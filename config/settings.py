@@ -48,6 +48,33 @@ class Settings(BaseSettings):
     media_root: Path = Path("./media")
     max_upload_mb: int = 8
 
+    # Account emails (welcome on signup, password reset) — provider-agnostic
+    # SMTP, works with Gmail/Outlook/any mailbox or transactional SMTP
+    # relay. Left unset by default: app/services/email.py treats a blank
+    # smtp_host as "email disabled" and skips sending rather than failing,
+    # so this is opt-in and never blocks signup/login on its own.
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_username: str = ""
+    smtp_password: str = ""
+    smtp_use_tls: bool = True
+    # What recipients see in the "From" field — falls back to smtp_username
+    # (the usual case: sending "as" the mailbox you authenticate with) if left blank.
+    smtp_from_email: str = ""
+    smtp_from_name: str = "QuantSphere"
+
+    @property
+    def email_enabled(self) -> bool:
+        """
+        Purpose:    Single source of truth for "should we attempt to send
+                    account emails at all" — every call site checks this
+                    instead of re-deriving it from smtp_host directly.
+        Args:       None.
+        Returns:    bool: True once an SMTP host has been configured.
+        Raises:     None.
+        """
+        return bool(self.smtp_host)
+
     # Free, no-API-key Yahoo Finance public chart endpoint — no signup needed.
     # EURUSD/GBPUSD/USDJPY/USDCHF/USDCAD/AUDUSD/NZDUSD are the seven forex "majors".
     market_data_default_symbols: list[str] = [

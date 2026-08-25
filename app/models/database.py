@@ -301,3 +301,21 @@ class Alert(Base):
     symbol: Mapped[str | None]
     read: Mapped[bool] = mapped_column(default=False)
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+
+
+class PasswordResetToken(Base):
+    """
+    A one-time, short-lived password-reset link. Only the SHA-256 hash of
+    the token is ever stored — the raw token exists only in the emailed
+    link, exactly like a session cookie's secret, so a database read alone
+    can never be used to reset an account's password.
+    """
+
+    __tablename__ = "password_reset_tokens"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    token_hash: Mapped[str] = mapped_column(unique=True, index=True)
+    expires_at: Mapped[datetime]
+    used: Mapped[bool] = mapped_column(default=False)
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())

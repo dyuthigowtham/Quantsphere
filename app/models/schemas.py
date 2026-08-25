@@ -109,6 +109,32 @@ class LoginResponse(BaseModel):
     )
 
 
+class ForgotPasswordRequest(BaseModel):
+    """Payload for requesting a password-reset email."""
+
+    email: str = Field(min_length=3, max_length=255)
+
+
+class ForgotPasswordResponse(BaseModel):
+    """Always the same generic message regardless of whether the email
+    matched an account — the whole point is to never reveal that."""
+
+    message: str = "If an account exists for that email, a password reset link has been sent."
+
+
+class ResetPasswordRequest(BaseModel):
+    """Payload for completing a password reset with the emailed token."""
+
+    token: str = Field(min_length=1)
+    new_password: str = Field(min_length=8, max_length=128)
+
+
+class ResetPasswordResponse(BaseModel):
+    """Confirms a password reset actually took effect."""
+
+    message: str = "Password updated — you can now log in with your new password."
+
+
 class PortfolioCreate(BaseModel):
     """Payload for creating a new paper-trading portfolio. The owner is
     always the authenticated user — never client-supplied."""

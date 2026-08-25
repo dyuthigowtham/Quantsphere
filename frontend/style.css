@@ -293,6 +293,12 @@ h1, h2, h3, .brand-name, .boot-word {
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .onboard-error { color: var(--red); font-size: 13px; min-height: 18px; margin: 10px 0 0; }
+.link-btn {
+  display: block; margin: 12px auto 0; background: none; border: none; cursor: pointer;
+  color: var(--accent-b); font-size: 13px; font-family: inherit; text-decoration: underline;
+  transition: color .15s;
+}
+.link-btn:hover { color: var(--text); }
 
 /* ---------- Fields ---------- */
 .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; font-size: 13px; color: var(--text-dim); }

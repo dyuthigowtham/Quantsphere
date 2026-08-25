@@ -95,6 +95,24 @@ return `{"status":"ok"}` with a valid Cloudflare-issued certificate.
 `mobile/capacitor.config.json`'s `server.url` to point the native mobile
 app at it (currently a placeholder).
 
+## Enabling account emails (welcome + password reset)
+
+Optional — signup and password reset both work without this, they just
+silently skip sending the email (logged, not an error) until it's
+configured. To turn it on, add SMTP credentials to `.env` (see the commented
+example in `.env.example`) and restart the service:
+
+```powershell
+notepad .env    # add SMTP_HOST, SMTP_USERNAME, SMTP_PASSWORD, etc.
+Restart-Service QuantSphere -Force
+```
+
+The easiest source of credentials if you don't already have SMTP access
+anywhere: a Gmail account + an **App Password** (not your normal Gmail
+password) from https://myaccount.google.com/apppasswords — set
+`SMTP_HOST=smtp.gmail.com`, `SMTP_USERNAME=` your Gmail address, and
+`SMTP_PASSWORD=` the generated App Password.
+
 ## Verifying the deployment
 
 ```powershell

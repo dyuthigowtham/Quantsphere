@@ -161,6 +161,7 @@
     document.getElementById('boot-screen').classList.add('fade-out');
     document.getElementById('app').classList.remove('hidden');
     setConnIndicator(healthy);
+    checkForPasswordResetLink();
 
     if (!MT5_ENABLED) {
       document.querySelector('.mt5-section').classList.add('hidden');
@@ -348,6 +349,76 @@
   }
 
   document.getElementById('ob-login-btn').addEventListener('click', handleLogin);
+
+  // ---------- Forgot / Reset Password ----------
+  document.getElementById('ob-forgot-password-link').addEventListener('click', () => {
+    document.getElementById('fp-email').value = document.getElementById('ob-login-email').value.trim();
+    document.getElementById('fp-error').textContent = '';
+    document.getElementById('fp-form').classList.remove('hidden');
+    document.getElementById('fp-success').classList.add('hidden');
+    openModal('modal-forgot-password');
+  });
+
+  document.getElementById('fp-submit-btn').addEventListener('click', async () => {
+    const emailAddr = document.getElementById('fp-email').value.trim();
+    const errEl = document.getElementById('fp-error');
+    errEl.textContent = '';
+    if (!emailAddr) {
+      errEl.textContent = 'Enter your email.';
+      return;
+    }
+    const btn = document.getElementById('fp-submit-btn');
+    btn.disabled = true;
+    try {
+      await api('POST', '/auth/forgot-password', { email: emailAddr });
+      document.getElementById('fp-form').classList.add('hidden');
+      document.getElementById('fp-success').classList.remove('hidden');
+    } catch (e) {
+      errEl.textContent = e.message;
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  // The reset link points at "/?reset_token=..." so it lands on the normal
+  // app shell (no separate server route needed) - pulled out of the URL and
+  // stored here rather than left sitting in the address bar/history.
+  let pendingResetToken = null;
+
+  function checkForPasswordResetLink() {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('reset_token');
+    if (!token) return;
+    pendingResetToken = token;
+    window.history.replaceState({}, document.title, window.location.pathname);
+    document.getElementById('rp-password').value = '';
+    document.getElementById('rp-error').textContent = '';
+    document.getElementById('rp-form').classList.remove('hidden');
+    document.getElementById('rp-success').classList.add('hidden');
+    openModal('modal-reset-password');
+  }
+
+  document.getElementById('rp-submit-btn').addEventListener('click', async () => {
+    const newPassword = document.getElementById('rp-password').value;
+    const errEl = document.getElementById('rp-error');
+    errEl.textContent = '';
+    if (!newPassword || newPassword.length < 8) {
+      errEl.textContent = 'Enter a password of at least 8 characters.';
+      return;
+    }
+    const btn = document.getElementById('rp-submit-btn');
+    btn.disabled = true;
+    try {
+      await api('POST', '/auth/reset-password', { token: pendingResetToken, new_password: newPassword });
+      pendingResetToken = null;
+      document.getElementById('rp-form').classList.add('hidden');
+      document.getElementById('rp-success').classList.remove('hidden');
+    } catch (e) {
+      errEl.textContent = e.message;
+    } finally {
+      btn.disabled = false;
+    }
+  });
 
   async function handleCreatePortfolio() {
     const name = document.getElementById('ob-portfolio-name').value.trim() || 'Main Journal';

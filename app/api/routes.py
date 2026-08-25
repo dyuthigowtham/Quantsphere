@@ -24,6 +24,8 @@ from app.models.schemas import (
     DecisionTrainingAttemptCreate,
     DecisionTrainingAttemptRead,
     DecisionTrainingSummary,
+    ForgotPasswordRequest,
+    ForgotPasswordResponse,
     LoginRequest,
     LoginResponse,
     MarketOrderRequest,
@@ -42,6 +44,8 @@ from app.models.schemas import (
     PreTradeCheckResult,
     RegimeResult,
     ReplayFeedbackResponse,
+    ResetPasswordRequest,
+    ResetPasswordResponse,
     ScreenshotRead,
     SetupCheckNarrativeResponse,
     SetupCheckRequest,
@@ -74,6 +78,7 @@ from app.services import (
     benchmarking,
     chat_context,
     decision_training,
+    email,
     execution,
     mt5_accounts,
     news_impact,
@@ -198,6 +203,10 @@ async def create_user(user_data: UserCreate, db: AsyncSession = Depends(get_db))
     Raises:     HTTPException: 409 if the email is already registered.
     """
     user = await accounts.create_user(db, user_data)
+    try:
+        await email.send_welcome_email(user.email)
+    except Exception:
+        logging.getLogger("quantsphere.routes").exception("Welcome email failed for user_id=%s", user.id)
     return UserRead.model_validate(user)
 
 
@@ -218,6 +227,49 @@ async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)) -> Lo
     token = auth_tokens.create_access_token(user.id)
     portfolio = await accounts.get_portfolio_for_user(db, user.id)
     return LoginResponse(access_token=token, user_id=user.id, portfolio_id=portfolio.id if portfolio else None)
+
+
+@router.post("/auth/forgot-password", response_model=ForgotPasswordResponse)
+async def forgot_password(
+    payload: ForgotPasswordRequest, request: Request, db: AsyncSession = Depends(get_db)
+) -> ForgotPasswordResponse:
+    """
+    Purpose:    Request a password-reset email. Always returns the same
+                generic response whether or not the email matches a real
+                account — the response, timing-sensitive info aside, must
+                never let someone probe which emails are registered.
+    Args:       payload (ForgotPasswordRequest): The email to send a reset
+                    link to, if it belongs to an account.
+                request (Request): Used to build the reset link against
+                    whatever host the app is actually being reached on
+                    (localhost, a tunnel, or a real domain) without needing
+                    a separate hardcoded base-URL setting.
+                db (AsyncSession): The active database session.
+    Returns:    ForgotPasswordResponse: Always the same generic message.
+    Raises:     None.
+    """
+    user = await accounts.find_user_by_email(db, payload.email)
+    if user is not None:
+        raw_token = await accounts.create_password_reset_token(db, user)
+        reset_link = f"{str(request.base_url).rstrip('/')}/?reset_token={raw_token}"
+        try:
+            await email.send_password_reset_email(user.email, reset_link)
+        except Exception:
+            logging.getLogger("quantsphere.routes").exception("Password reset email failed for user_id=%s", user.id)
+    return ForgotPasswordResponse()
+
+
+@router.post("/auth/reset-password", response_model=ResetPasswordResponse)
+async def reset_password(payload: ResetPasswordRequest, db: AsyncSession = Depends(get_db)) -> ResetPasswordResponse:
+    """
+    Purpose:    Complete a password reset using the token from the emailed link.
+    Args:       payload (ResetPasswordRequest): The raw token plus the new password.
+                db (AsyncSession): The active database session.
+    Returns:    ResetPasswordResponse: Confirmation message.
+    Raises:     HTTPException: 400 if the token is invalid, already used, or expired.
+    """
+    await accounts.reset_password_with_token(db, payload.token, payload.new_password)
+    return ResetPasswordResponse()
 
 
 @router.post("/portfolios", response_model=PortfolioRead, status_code=status.HTTP_201_CREATED)

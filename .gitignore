@@ -3,6 +3,7 @@ __pycache__/
 .venv/
 .env
 .env.*
+!.env.example
 media/trade_screenshots/**
 !media/trade_screenshots/.gitkeep
 *.db

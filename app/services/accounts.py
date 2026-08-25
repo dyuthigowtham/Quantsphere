@@ -1,11 +1,21 @@
+import hashlib
+import secrets
+from datetime import datetime, timedelta
+
 import bcrypt
 from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.database import Alert, Portfolio, Setup, Strategy, User
+from app.models.database import Alert, PasswordResetToken, Portfolio, Setup, Strategy, User
 from app.models.schemas import PortfolioCreate, SetupCreate, StrategyCreate, UserCreate
+
+# Naive UTC throughout (datetime.utcnow(), not datetime.now(timezone.utc)) to
+# match every other timestamp column in this codebase — mixing naive and
+# aware datetimes against the same Postgres TIMESTAMP column raises
+# "can't compare offset-naive and offset-aware datetimes" (see execution.py).
+PASSWORD_RESET_TOKEN_TTL_MINUTES = 60
 
 
 def _hash_password(password: str) -> str:
@@ -64,6 +74,76 @@ async def authenticate_user(db: AsyncSession, email: str, password: str) -> User
     if user is None or not verify_password(password, user.hashed_password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
     return user
+
+
+def _hash_token(raw_token: str) -> str:
+    """
+    Purpose:    Hash a password-reset token for storage. SHA-256 (not
+                bcrypt) is deliberate — the raw token is already a
+                cryptographically random 32-byte value, not a low-entropy
+                user-chosen secret, so it needs collision resistance for a
+                fast equality lookup, not bcrypt's deliberate slowness.
+    Args:       raw_token (str): The token as emailed to the user.
+    Returns:    str: Hex-encoded SHA-256 digest.
+    Raises:     None.
+    """
+    return hashlib.sha256(raw_token.encode("utf-8")).hexdigest()
+
+
+async def find_user_by_email(db: AsyncSession, email: str) -> User | None:
+    """
+    Purpose:    Look up an account by email without raising — used by the
+                forgot-password flow, which must respond identically whether
+                or not the email matches a real account.
+    Args:       db (AsyncSession): The active database session.
+                email (str): The email to look up.
+    Returns:    User | None: The matching account, or None.
+    Raises:     None.
+    """
+    stmt = select(User).where(User.email == email)
+    return (await db.execute(stmt)).scalar_one_or_none()
+
+
+async def create_password_reset_token(db: AsyncSession, user: User) -> str:
+    """
+    Purpose:    Issue a fresh one-time password-reset token for an account.
+    Args:       db (AsyncSession): The active database session.
+                user (User): The account requesting a reset.
+    Returns:    str: The RAW token — this is the only moment it ever exists
+                    outside the emailed link; only its hash is persisted.
+    Raises:     None.
+    """
+    raw_token = secrets.token_urlsafe(32)
+    reset_token = PasswordResetToken(
+        user_id=user.id,
+        token_hash=_hash_token(raw_token),
+        expires_at=datetime.utcnow() + timedelta(minutes=PASSWORD_RESET_TOKEN_TTL_MINUTES),
+    )
+    db.add(reset_token)
+    await db.commit()
+    return raw_token
+
+
+async def reset_password_with_token(db: AsyncSession, raw_token: str, new_password: str) -> None:
+    """
+    Purpose:    Complete a password reset: validate the token is real,
+                unused, and unexpired, then set the new password and burn
+                the token so it can never be replayed.
+    Args:       db (AsyncSession): The active database session.
+                raw_token (str): The token from the reset link.
+                new_password (str): The new plaintext password to set.
+    Returns:    None.
+    Raises:     HTTPException: 400 if the token is unknown, already used, or expired.
+    """
+    stmt = select(PasswordResetToken).where(PasswordResetToken.token_hash == _hash_token(raw_token))
+    reset_token = (await db.execute(stmt)).scalar_one_or_none()
+    if reset_token is None or reset_token.used or reset_token.expires_at < datetime.utcnow():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="This reset link is invalid or has expired.")
+
+    user = await db.get(User, reset_token.user_id)
+    user.hashed_password = _hash_password(new_password)
+    reset_token.used = True
+    await db.commit()
 
 
 async def create_portfolio(db: AsyncSession, user_id: int, portfolio_data: PortfolioCreate) -> Portfolio:
