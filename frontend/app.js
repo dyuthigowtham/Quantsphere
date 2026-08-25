@@ -239,7 +239,7 @@
     home: openHomeView,
     cockpit: openCockpitView,
     markets: openMarketsView,
-    trades: openTradesView,
+    news: openNewsView,
     analyze: openAnalyzeView,
     backtest: openBacktestView,
     textbook: openLearnView,
@@ -1274,6 +1274,14 @@
     // risks it sizing itself incorrectly.
     renderMarketTicker();
     renderTickerTape(Object.keys(state.market).sort());
+    renderTradesList(state.trades);
+    refreshMt5Status();
+    const bridgeIdEl = document.getElementById('mt5-bridge-portfolio-id');
+    if (bridgeIdEl) bridgeIdEl.textContent = state.portfolioId;
+  }
+
+  function openNewsView() {
+    showView('news');
   }
 
   function connectMarketFeed() {
@@ -1665,14 +1673,6 @@
   document.getElementById('btn-mt5-connect').addEventListener('click', openMt5ConnectModal);
   document.getElementById('mt5-connect-submit').addEventListener('click', submitMt5Connect);
   document.getElementById('btn-mt5-disconnect').addEventListener('click', disconnectMt5);
-
-  function openTradesView() {
-    showView('trades');
-    renderTradesList(state.trades);
-    refreshMt5Status();
-    const bridgeIdEl = document.getElementById('mt5-bridge-portfolio-id');
-    if (bridgeIdEl) bridgeIdEl.textContent = state.portfolioId;
-  }
 
   // ---------- Market News ----------
   function timeAgo(iso) {

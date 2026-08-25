@@ -38,7 +38,7 @@
       <nav class="main-nav" id="main-nav">
         <button type="button" class="nav-item active" data-view="home">Home</button>
         <button type="button" class="nav-item" data-view="markets">Markets</button>
-        <button type="button" class="nav-item" data-view="trades">Trades</button>
+        <button type="button" class="nav-item" data-view="news">News</button>
         <button type="button" class="nav-item" data-view="analyze">Analyze</button>
         <button type="button" class="nav-item" data-view="backtest">Practice</button>
         <button type="button" class="nav-item" data-view="textbook">Learn</button>
@@ -246,30 +246,6 @@
         <div id="market-ticker" class="market-ticker"></div>
       </section>
 
-      <section class="news-section">
-        <div class="news-breaking" id="news-breaking">
-          <span class="news-breaking-label">🔴 Breaking</span>
-          <div class="news-breaking-viewport">
-            <div class="news-breaking-track" id="news-breaking-track">
-              <span class="news-breaking-item">Loading latest headlines…</span>
-            </div>
-          </div>
-        </div>
-        <div class="section-head">
-          <h2>Market News</h2>
-          <div class="news-tabs" id="news-tabs">
-            <button type="button" class="news-tab active" data-category="international">International</button>
-            <button type="button" class="news-tab" data-category="national">National (India)</button>
-            <button type="button" class="news-tab" data-category="my-symbols">🎯 My Symbols</button>
-          </div>
-        </div>
-        <div id="news-list" class="news-list">
-          <div class="news-loading">Loading headlines…</div>
-        </div>
-      </section>
-    </main>
-
-    <main id="view-trades" class="view hidden">
       <section class="mt5-bridge-section">
         <div class="section-head">
           <h2>MetaTrader 5</h2>
@@ -321,6 +297,30 @@
           <button class="btn btn-primary" id="btn-empty-new-trade">+ New Trade</button>
         </div>
         <div id="trades-list" class="trades-list"></div>
+      </section>
+    </main>
+
+    <main id="view-news" class="view hidden">
+      <section class="news-section">
+        <div class="news-breaking" id="news-breaking">
+          <span class="news-breaking-label">🔴 Breaking</span>
+          <div class="news-breaking-viewport">
+            <div class="news-breaking-track" id="news-breaking-track">
+              <span class="news-breaking-item">Loading latest headlines…</span>
+            </div>
+          </div>
+        </div>
+        <div class="section-head">
+          <h2>Market News</h2>
+          <div class="news-tabs" id="news-tabs">
+            <button type="button" class="news-tab active" data-category="international">International</button>
+            <button type="button" class="news-tab" data-category="national">National (India)</button>
+            <button type="button" class="news-tab" data-category="my-symbols">🎯 My Symbols</button>
+          </div>
+        </div>
+        <div id="news-list" class="news-list">
+          <div class="news-loading">Loading headlines…</div>
+        </div>
       </section>
     </main>
 
@@ -1004,7 +1004,7 @@
 
   <nav class="bottom-tab-bar" id="bottom-tab-bar">
     <button type="button" class="tab-item active" data-view="cockpit"><span>🏠</span>Cockpit</button>
-    <button type="button" class="tab-item" data-view="trades"><span>📓</span>Trades</button>
+    <button type="button" class="tab-item" data-view="markets"><span>📓</span>Trades</button>
     <button type="button" class="tab-item" data-view="analyze"><span>🧬</span>Analyze</button>
     <button type="button" class="tab-item" data-view="coach"><span>💬</span>Coach</button>
   </nav>
