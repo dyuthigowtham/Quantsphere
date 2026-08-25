@@ -17,6 +17,7 @@
     market: {},
     marketSocket: null,
     chartSymbol: null,
+    chartOpenTrade: null,
     chatHistory: [],
     newsLoaded: false,
     activeNewsCategory: 'international',
@@ -1253,7 +1254,10 @@
 
       drawSparkline(card.querySelector('.ticker-sparkline'), data.history || []);
 
-      if (state.chartSymbol === symbol) updateChartLivePrice(data.price, prevPrice);
+      if (state.chartSymbol === symbol) {
+        updateChartLivePrice(data.price, prevPrice);
+        if (state.chartOpenTrade && state.chartOpenTrade.symbol === symbol) updateChartPositionPnl(data.price);
+      }
     });
   }
 
@@ -1394,9 +1398,65 @@
     if (current) updateChartLivePrice(current.price);
 
     renderTradingViewChart(symbol);
-    refreshPretradeCheck();
+
+    // Reopening the chart for a symbol that already has an open position
+    // (e.g. navigated away and came back) lands straight in monitoring
+    // mode instead of showing the order form again.
+    const openTrade = state.trades.find((t) => t.symbol === symbol && t.status === 'open');
+    if (openTrade) {
+      showChartPositionMode(openTrade);
+    } else {
+      showChartOrderMode();
+      refreshPretradeCheck();
+    }
     openModal('modal-chart');
   }
+
+  // ---------- Chart Modal: stay-open position monitoring ----------
+  // Placing a trade from the chart no longer closes it — the whole point is
+  // to keep watching the live price until the position is actually closed.
+  function showChartOrderMode() {
+    state.chartOpenTrade = null;
+    document.getElementById('chart-order-section').classList.remove('hidden');
+    document.getElementById('chart-position-section').classList.add('hidden');
+  }
+
+  function showChartPositionMode(trade) {
+    state.chartOpenTrade = trade;
+    document.getElementById('chart-order-section').classList.add('hidden');
+    document.getElementById('chart-position-section').classList.remove('hidden');
+    document.getElementById('chart-position-dir').textContent = trade.direction === 'buy' ? '▲ Buy' : '▼ Sell';
+    const decimals = trade.open_price < 50 ? 5 : 2;
+    document.getElementById('chart-position-entry').textContent = trade.open_price.toFixed(decimals);
+    document.getElementById('chart-position-volume').textContent = `${trade.volume} lots`;
+    const current = state.market[trade.symbol];
+    updateChartPositionPnl(current ? current.price : trade.open_price);
+  }
+
+  function updateChartPositionPnl(currentPrice) {
+    const trade = state.chartOpenTrade;
+    if (!trade) return;
+    const sign = trade.direction === 'buy' ? 1 : -1;
+    const pnl = (currentPrice - trade.open_price) * trade.volume * sign;
+    const el = document.getElementById('chart-position-pnl');
+    el.textContent = `${pnl >= 0 ? '+' : ''}${pnl.toFixed(2)}`;
+    el.classList.toggle('pos', pnl >= 0);
+    el.classList.toggle('neg', pnl < 0);
+  }
+
+  document.getElementById('chart-position-close-btn').addEventListener('click', async () => {
+    const trade = state.chartOpenTrade;
+    if (!trade) return;
+    const btn = document.getElementById('chart-position-close-btn');
+    btn.disabled = true;
+    try {
+      closeModal('modal-chart');
+      state.chartOpenTrade = null;
+      await closeTradeAtMarket(trade.id);
+    } finally {
+      btn.disabled = false;
+    }
+  });
 
   // ---------- Pre-Trade AI Check ----------
   let pretradeTimer = null;
@@ -1464,8 +1524,10 @@
         volume,
         comment: comment || null,
       });
-      closeModal('modal-chart');
       await loadDashboard();
+      // Stay on the chart instead of closing the modal - the point is to
+      // keep watching the live price until this position is closed.
+      showChartPositionMode(trade);
       toast(`${direction === 'buy' ? 'Bought' : 'Sold'} ${state.chartSymbol} at market (${trade.open_price})`);
     } catch (e) {
       errEl.textContent = e.message;

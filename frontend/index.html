@@ -767,7 +767,7 @@
       </div>
       <div id="tv-chart-container" class="tv-chart-container tradingview-widget-container"></div>
 
-      <div class="detail-section">
+      <div class="detail-section" id="chart-order-section">
         <h3>Paper Trade at Market <span class="badge-local">live price · no manual entry</span></h3>
         <div class="grid-2">
           <label class="field">
@@ -801,6 +801,20 @@
           </button>
         </div>
         <p class="onboard-error" id="mkt-error"></p>
+      </div>
+
+      <div class="detail-section chart-position-section hidden" id="chart-position-section">
+        <h3>Open Position <span class="badge-local" id="chart-position-dir"></span></h3>
+        <p class="section-sub">Keep this chart open to watch the price move — it stays up until you close the trade.</p>
+        <div class="grid-2">
+          <div class="chart-position-stat"><span class="stat-label">Entry Price</span><span id="chart-position-entry" class="chart-position-value"></span></div>
+          <div class="chart-position-stat"><span class="stat-label">Volume</span><span id="chart-position-volume" class="chart-position-value"></span></div>
+        </div>
+        <div class="chart-position-stat chart-position-pnl-row">
+          <span class="stat-label">Live P&amp;L</span>
+          <span id="chart-position-pnl" class="chart-position-value chart-position-pnl">—</span>
+        </div>
+        <button class="btn btn-ghost btn-block" id="chart-position-close-btn">Close Position at Market</button>
       </div>
     </div>
   </div>

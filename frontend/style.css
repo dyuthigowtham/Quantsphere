@@ -406,6 +406,14 @@ h1, h2, h3, .brand-name, .boot-word {
 .pretrade-note { font-size: 10.5px; font-weight: 500; opacity: 0.85; text-transform: none; letter-spacing: 0; max-width: 220px; }
 .pretrade-note:empty { display: none; }
 
+/* ---------- Chart Modal: Open Position monitor ---------- */
+.chart-position-stat { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+.chart-position-value { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 600; }
+.chart-position-pnl-row { margin-bottom: 16px; }
+.chart-position-pnl { font-size: 22px; transition: color .3s; }
+.chart-position-pnl.pos { color: var(--green); }
+.chart-position-pnl.neg { color: var(--red); }
+
 .ticker-card { cursor: pointer; }
 .ticker-card:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); }
 
